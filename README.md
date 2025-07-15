@@ -95,11 +95,9 @@ brew install opencv apriltag
 | `CMakeLists.txt` | `CMake` 빌드 시스템을 위한 설정 파일입니다. |
 | `README.md` | 프로젝트 설명 및 안내 문서입니다. |
 | `src/camera_calibration.hpp` | 카메라 캘리브레이션 기능의 헤더 파일입니다. |
-| `src/camera_calibration.cpp` | 체커보드 이미지 캡처 및 캘리브레이션 로직을 구현합니다. |
-| `src/camera_calibration_main.cpp` | `calibrate` 실행 파일의 메인 함수입니다. |
+| `src/camera_calibration.cpp` | `calibrate` 실행 파일의 전체 소스 코드입니다. 캘리브레이션 로직과 `main` 함수를 모두 포함합니다. |
 | `src/generate_markers.hpp` | AprilTag 생성 기능의 헤더 파일입니다. |
-| `src/generate_markers.cpp` | 지정된 ID의 AprilTag 이미지를 생성하고 저장합니다. |
-| `src/generate_markers_main.cpp` | `generate_markers` 실행 파일의 메인 함수입니다. |
+| `src/generate_markers.cpp` | `generate_markers` 실행 파일의 전체 소스 코드입니다. 마커 생성 로직과 `main` 함수를 모두 포함합니다. |
 | `src/platform_logic.hpp` | 플랫폼 좌표계 계산 및 상대 위치/회전 변환 로직의 헤더 파일입니다. |
 | `src/platform_logic.cpp` | 플랫폼 변환, 상대 좌표/회전 계산, 3D 시각화(축, 큐브) 등 핵심 3D 연산을 구현합니다. |
 | `src/run_platform_system.hpp` | 플랫폼 추적 시스템의 헤더 파일입니다. |
