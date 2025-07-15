@@ -129,7 +129,7 @@ void drawCube(cv::InputOutputArray image, const cv::Mat& camera_matrix, const cv
 
 cv::Point3f rvecToEulerAngles(const cv::Mat& rvec) {
     cv::Mat R;
-    cv::Rodrigues(rvec, R); // 회전 벡터를 회전 행렬로 변환
+    cv::Rodrigues(rvec, R); // 회전 벡터 -> 회전 행렬
 
     double sy = std::sqrt(R.at<double>(0,0) * R.at<double>(0,0) +  R.at<double>(1,0) * R.at<double>(1,0) );
 
@@ -146,6 +146,6 @@ cv::Point3f rvecToEulerAngles(const cv::Mat& rvec) {
         z = 0;
     }
 
-    // 라디안을 도로 변환
+    // rad -> deg
     return cv::Point3f(x * 180.0 / CV_PI, y * 180.0 / CV_PI, z * 180.0 / CV_PI);
 }
