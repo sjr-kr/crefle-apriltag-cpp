@@ -13,7 +13,6 @@ find_package(apriltag REQUIRED)
 # 카메라 캘리브레이션 실행 파일
 add_executable(calibrate
     src/camera_calibration.cpp
-    src/camera_calibration_main.cpp
 )
 # OpenCV 라이브러리 링크
 target_link_libraries(calibrate ${OpenCV_LIBS})
@@ -32,7 +31,6 @@ target_link_libraries(track
 # 마커 생성 실행 파일
 add_executable(generate_markers
     src/generate_markers.cpp
-    src/generate_markers_main.cpp
 )
 # OpenCV와 AprilTag 라이브러리를 링크합니다.
 target_link_libraries(generate_markers
