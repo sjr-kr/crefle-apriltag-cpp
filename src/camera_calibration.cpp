@@ -11,9 +11,9 @@ void capture_calibration_images(int camera_index, int num_corners_x, int num_cor
     std::vector<std::vector<cv::Point2f>> image_points;
     cv::Size board_size(num_corners_x, num_corners_y);
     int image_count = 0;
-    cv::Size image_size; // 이미지 크기를 저장할 변수
+    cv::Size image_size; // 이미지 크기
 
-    while (image_count < 20) { // 20개의 이미지를 캡처합니다.
+    while (image_count < 20) { // 이미지 최대 20개 캡처
         cv::Mat frame;
         cap >> frame;
         if (frame.empty()) break;
@@ -32,12 +32,12 @@ void capture_calibration_images(int camera_index, int num_corners_x, int num_cor
         cv::imshow("Calibration", frame);
 
         int key = cv::waitKey(1);
-        if (key == ' ' && found) { // 스페이스바를 눌러 캡처
+        if (key == ' ' && found) { // 스페이스바 : 캡처
             image_points.push_back(corners);
             image_count++;
             std::cout << "Captured image " << image_count << std::endl;
         }
-        if (key == 27) break; // ESC를 눌러 종료
+        if (key == 27) break; // ESC : 종료
     }
 
     cv::destroyAllWindows();
@@ -57,10 +57,9 @@ void capture_calibration_images(int camera_index, int num_corners_x, int num_cor
 
     cv::Mat camera_matrix, dist_coeffs;
     std::vector<cv::Mat> rvecs, tvecs;
-    // gray.size() 대신 저장해둔 image_size를 사용합니다.
     cv::calibrateCamera(object_points, image_points, image_size, camera_matrix, dist_coeffs, rvecs, tvecs);
 
-    // 캘리브레이션 데이터를 프로젝트 루트에 저장하도록 경로 수정
+    // 캘리브레이션 데이터 (.yml 파일) 저장
     cv::FileStorage fs("../calibration_data.yml", cv::FileStorage::WRITE);
     fs << "camera_matrix" << camera_matrix;
     fs << "dist_coeffs" << dist_coeffs;

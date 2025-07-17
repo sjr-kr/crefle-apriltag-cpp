@@ -6,9 +6,10 @@
 #include <filesystem>
 #include <sstream>
 
+#include <opencv2/opencv.hpp>
 #include <apriltag/apriltag.h>
 #include <apriltag/tag36h11.h>
-// 다른 딕셔너리들은 필요에 따라 주석 해제하거나 추가하세요.
+// 다른 dict들은 필요에 따라 주석 해제하거나 추가
 // #include <apriltag/tag25h9.h>
 // #include <apriltag/tag16h5.h>
 // #include <apriltag/tagCircle21h7.h>
@@ -18,61 +19,57 @@
 // #include <apriltag/tagStandard41h12.h>
 // #include <apriltag/tagStandard52h13.h>
 
-// OpenCV를 사용하여 이미지 저장
-#include <opencv2/opencv.hpp>
-
 namespace fs = std::filesystem;
 
 void generate_apriltags(const std::vector<int>& ids, int image_size, const std::string& output_dir) {
-    // 출력 디렉토리가 없으면 생성합니다.
+    // 디렉토리 없으면 생성
     if (!fs::exists(output_dir)) {
         fs::create_directories(output_dir);
     }
 
-    // 사용할 AprilTag 딕셔너리를 선택합니다. 여기서는 tag36h11을 사용합니다.
+    // dict 선택; ex) tag36h11
     apriltag_family_t *tf = tag36h11_create();
     if (!tf) {
-        std::cerr << "Error: Could not create AprilTag family." << std::endl;
+        std::cerr << "Error: AprilTag 패밀리 생성 실패!" << std::endl;
         return;
     }
 
     // 마커 생성
     for (int id : ids) {
         if (id < 0 || id >= tf->ncodes) {
-            std::cerr << "Warning: AprilTag ID " << id << " is out of range for this family. Skipping." << std::endl;
+            std::cerr << "Warning: AprilTag ID " << id << " 이(가) 해당 패밀리 범위 밖! 건너뛰는 중..." << std::endl;
             continue;
         }
 
-        // AprilTag 라이브러리에서 마커 비트맵을 가져옵니다.
+        // AprilTag ID에 해당하는 마커 불러오기
         image_u8_t *im = apriltag_to_image(tf, id);
         if (!im) {
-            std::cerr << "Error: Could not generate image for ID " << id << ". Skipping." << std::endl;
+            std::cerr << "Error: ID " << id << "에 해당하는 마커 이미지 생성 실패! 건너뛰는 중..." << std::endl;
             continue;
         }
 
-        // OpenCV Mat으로 변환 시 im->stride를 사용하여 올바른 메모리 레이아웃을 지정합니다.
+        // im->stride : 이미지 이동 사이즈
         cv::Mat marker_img(im->height, im->width, CV_8UC1, im->buf, im->stride);
 
-        // 원하는 크기로 리사이즈
+        // 사이즈 변경
         cv::Mat resized_img;
         cv::resize(marker_img, resized_img, cv::Size(image_size, image_size), 0, 0, cv::INTER_NEAREST);
 
-        // 파일 저장 경로
+        // 마커 저장 디렉토리
         std::string filename = output_dir + "/tag" + std::to_string(id) + ".png";
         cv::imwrite(filename, resized_img);
-        std::cout << "Generated " << filename << std::endl;
+        std::cout << "생성된 파일: " << filename << std::endl;
 
         image_u8_destroy(im);
     }
 
-    // AprilTag 딕셔너리 자원 해제
     tag36h11_destroy(tf);
 }
 
 int main() {
     std::vector<int> ids_to_generate;
     std::string input_line;
-    int image_size = 500; // 기본 이미지 크기를 500x500 픽셀로 설정
+    int image_size = 500; // 500x500 pixel (standard)
     std::string output_dir = "generated_markers";
 
     std::cout << "Enter AprilTag IDs to generate (space-separated, e.g., 0 1 2 3 10): ";

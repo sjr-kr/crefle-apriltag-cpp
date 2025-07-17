@@ -2,7 +2,7 @@
 #include <opencv2/calib3d.hpp>
 #include <vector>
 
-// 플랫폼 마커들의 3D 월드 좌표를 정의합니다.
+// 플랫폼 마커 월드 좌표
 std::map<int, cv::Point3f> getPlatformWorldCoordinates(double side_length) {
     double half_size = side_length / 2.0;
     std::map<int, cv::Point3f> world_coords;
@@ -133,7 +133,7 @@ cv::Point3f rvecToEulerAngles(const cv::Mat& rvec) {
 
     double sy = std::sqrt(R.at<double>(0,0) * R.at<double>(0,0) +  R.at<double>(1,0) * R.at<double>(1,0) );
 
-    bool singular = sy < 1e-6; // 특이점(짐벌 락) 확인
+    bool singular = sy < 1e-6; // 짐벌 락 확인
 
     double x, y, z;
     if (!singular) {
